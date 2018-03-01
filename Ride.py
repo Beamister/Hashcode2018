@@ -11,6 +11,13 @@ class Ride:
 		self.earliestStart = earliest
 		self.latestFinish = finish
 
+	def __str__(self):
+		toOutput = "\n"+self.name
+		toOutput += " starts @ ("+self.startX()+","+self.startY() + "), "
+		toOutput += "\nends @ ("+self.endX()+","+self.endY() + ") and "
+		toOutput += " must finish before " + self.latestFinish + "."
+		return toOutput
+
 	def startX(self):
 		return self.start["x"]
 
