@@ -32,6 +32,13 @@ class Simulation:
                 "\nvehicles: " + str(self.vehicles) +
                 "\nrides: " + str(self.rides))
 
+    def assignments(self):
+        print("Make assignments of cars to rides")
+
+    def calculatepoints(self, car, ride):
+        print("Calculate those pointy bois")
+
+
     @staticmethod
     def from_file(filepath):
         with io.open(filepath) as f:
@@ -66,7 +73,7 @@ class Simulation:
 
 def main():
     print(Simulation.from_file(sys.argv[1]))
-
+    #Time loop here
 
 if __name__ == '__main__':
     main()
