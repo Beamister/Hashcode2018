@@ -50,7 +50,7 @@ class Simulation:
                     carI += 1
                     currentPointValue = self.calculatePoints(car, ride)
                     self.matrix.setValue(carI, rideI, currentPointValue)
-        for car in self.vehicles:
+        for car in self.vehicles: 
             if(not car.hasRide):
                 (carI, rideI) = self.matrix.returnLargest()
                 self.vehicles[carI].assignRide(self.rides[rideI])
@@ -59,23 +59,23 @@ class Simulation:
         timeToRide = car.timeTo(ride.startX(),ride.startY())
 
         # if the car will arrive after finish, return -1 score
-        if((timeToRide + self.num_of_steps) > ride.latest_finish):
+        if((timeToRide + self.curStep) > ride.latest_finish):
             return -1
-        elif((timeToRide + self.num_of_steps + ride.distance()) > ride.latest_finish()):
+        elif((timeToRide + self.curStep + ride.distance()) > ride.latest_finish()):
             return -1
 
         score = 0
 
         # add bonus if car will arrive on time
-        if((timeToRide + self.num_of_steps) == ride.earliest_start):
+        if((timeToRide + self.curStep) == ride.earliest_start):
             score += 2
         
         # add distance of the ride and length of ride
         score += timeToRide + ride.distance() 
 
         # reduce score by number of steps to start of ride
-        if((timeToRide + self.num_of_steps) < ride.earliest_start):
-            score -= (ride.earliest_start - (timeToRide + self.num_of_steps))
+        if((timeToRide + self.curStep) < ride.earliest_start):
+            score -= (ride.earliest_start - (timeToRide + self.curStep))
 
         return score
 
