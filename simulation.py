@@ -2,6 +2,7 @@
 
 import io
 import sys
+from Car import Car
 from Ride import Ride
 
 
@@ -16,20 +17,20 @@ class Grid:
 
 
 class Simulation:
-    def __init__(self, grid, num_of_vehicles, bonus, num_of_steps, rides):
+    def __init__(self, grid, bonus, num_of_steps, rides, vehicles):
         self.grid = grid
-        self.num_of_vehicles = num_of_vehicles
+        self.vehicles = vehicles
         self.bonus = bonus
         self.num_of_steps = num_of_steps
         self.rides = rides
 
     def __str__(self):
-        return (self.__class__.__name__ + '(' +
-                str(self.grid) + ', ' +
-                str(self.num_of_vehicles) + ', ' +
-                str(self.bonus) + ', ' +
-                str(self.num_of_steps) + ', ' +
-                str(self.rides) + ')')
+        return (self.__class__.__name__ + ':\n' +
+                "grid: " + str(self.grid) +
+                "\nbonus: " + str(self.bonus) +
+                "\n# of steps: " + str(self.num_of_steps) +
+                "\nvehicles: " + str(self.vehicles) +
+                "\nrides: " + str(self.rides))
 
     @staticmethod
     def from_file(filepath):
@@ -55,7 +56,12 @@ class Simulation:
                 rides.append(
                     Ride(i, x0, x1, y0, y1, earliest_start, latest_finish))
 
-            return Simulation(grid, num_of_vehicles, bonus, num_of_steps, rides)
+            # Get vehicles
+            vehicles = []
+            for i in range(0, num_of_vehicles):
+                vehicles.append(Car(i))
+
+            return Simulation(grid, bonus, num_of_steps, rides, vehicles)
 
 
 def main():
