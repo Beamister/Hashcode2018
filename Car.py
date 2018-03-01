@@ -2,6 +2,7 @@ class Car:
     # Models a car's state
     curPos = {'x': None, 'y': None}
     desPos = {'x': None, 'y': None}
+    pastRides = []
     currentRide = None
     hasRide = False
     pickingUp = False
@@ -55,6 +56,7 @@ class Car:
         if(self.hasRide and self.isAtDestination()):
             self.pickingUp = False
             self.hasRide = False
+            self.pastRides.append(self.currentRide)
             self.currentRide = None
 
     # Get x position

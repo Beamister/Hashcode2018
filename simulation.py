@@ -27,7 +27,6 @@ class Simulation:
         self.rides = rides
         self.matrix = TheMatrix(len(vehicles), len(rides))
 
-
     def __str__(self):
         return (self.__class__.__name__ + ':\n' +
                 "grid: " + str(self.grid) +
@@ -50,32 +49,32 @@ class Simulation:
                     carI += 1
                     currentPointValue = self.calculatePoints(car, ride)
                     self.matrix.setValue(carI, rideI, currentPointValue)
-        for car in self.vehicles:
+        for car in self.vehicles: 
             if(not car.hasRide):
                 (carI, rideI) = self.matrix.returnLargest()
                 self.vehicles[carI].assignRide(self.rides[rideI])
 
     def calculatePoints(self, car, ride):
-        timeToRide = car.timeTo(ride.startX(),ride.startY())
+        timeToRide = car.timeTo(ride.startX(), ride.startY())
 
         # if the car will arrive after finish, return -1 score
-        if((timeToRide + self.num_of_steps) > ride.latest_finish):
+        if((timeToRide + self.curStep) > ride.latest_finish):
             return -1
-        elif((timeToRide + self.num_of_steps + ride.distance()) > ride.latest_finish()):
+        elif((timeToRide + self.curStep + ride.distance()) > ride.latest_finish()):
             return -1
 
         score = 0
 
         # add bonus if car will arrive on time
-        if((timeToRide + self.num_of_steps) == ride.earliest_start):
+        if((timeToRide + self.curStep) == ride.earliest_start):
             score += 2
-        
+
         # add distance of the ride and length of ride
-        score += timeToRide + ride.distance() 
+        score += timeToRide + ride.distance()
 
         # reduce score by number of steps to start of ride
-        if((timeToRide + self.num_of_steps) < ride.earliest_start):
-            score -= (ride.earliest_start - (timeToRide + self.num_of_steps))
+        if((timeToRide + self.curStep) < ride.earliest_start):
+            score -= (ride.earliest_start - (timeToRide + self.curStep))
 
         return score
 
@@ -107,14 +106,25 @@ class Simulation:
             vehicles = []
             for i in range(0, num_of_vehicles):
                 vehicles.append(Car(i))
-            
+
             return Simulation(grid, bonus, num_of_steps, rides, vehicles)
+
+
+def output(filepath, num_lists):
+    with io.open(filepath) as f:
+        f.write(str(len(num_lists)))
+        for num_list in num_lists:
+            for i in range(0, len(num_list) - 1):
+                f.write(str(num_list[i] + ' '))
+            if len(num_list) > 0:
+                f.write(str(num_list[len(num_list) - 1]))
+            f.write('\n')
 
 
 def main():
     simulation = Simulation.from_file(sys.argv[1])
     print(simulation)
-    #Time loop here
+    # Time loop here
     for currentStep in range(simulation.num_of_steps):
         simulation.curStep = currentStep
         simulation.assignments()
