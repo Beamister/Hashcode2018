@@ -59,7 +59,7 @@ class Simulation:
 
 
 def main():
-    print(Simulation.fromFile(sys.argv[1]))
+    print(Simulation.from_file(sys.argv[1]))
 
 
 if __name__ == '__main__':
