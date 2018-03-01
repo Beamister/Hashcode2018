@@ -1,6 +1,6 @@
 class Car:
     # Models a car's state
-    curPos = {'x': None, 'y': None}
+    curPos = {'x': 0, 'y': 0}
     desPos = {'x': None, 'y': None}
     pastRides = []
     currentRide = None
