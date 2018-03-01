@@ -58,23 +58,23 @@ class Simulation:
         timeToRide = car.timeTo(ride.startX(), ride.startY())
 
         # if the car will arrive after finish, return -1 score
-        if((timeToRide + self.curStep) > ride.latest_finish):
+        if((timeToRide + self.curStep) > ride.latestFinish):
             return -1
-        elif((timeToRide + self.curStep + ride.distance()) > ride.latest_finish()):
+        elif((timeToRide + self.curStep + ride.distance()) > ride.latestFinish):
             return -1
 
         score = 0
 
         # add bonus if car will arrive on time
-        if((timeToRide + self.curStep) == ride.earliest_start):
+        if((timeToRide + self.curStep) == ride.earliestStart):
             score += 2
 
         # add distance of the ride and length of ride
         score += timeToRide + ride.distance()
 
         # reduce score by number of steps to start of ride
-        if((timeToRide + self.curStep) < ride.earliest_start):
-            score -= (ride.earliest_start - (timeToRide + self.curStep))
+        if((timeToRide + self.curStep) < ride.earliestStart):
+            score -= (ride.earliestStart - (timeToRide + self.curStep))
 
         return score
 
