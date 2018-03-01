@@ -21,3 +21,8 @@ class TheMatrix:
 
         # return tuple of car index and ride index
         return carI,rideI
+
+    # set value of (carI,rideI) in matrix to value
+    def setValue(self, carI, rideI, value):
+        self.matrix[carI][rideI] = value
+    
