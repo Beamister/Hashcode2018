@@ -2,7 +2,7 @@
 
 import io
 import sys
-import Ride
+from Ride import Ride
 
 
 class Grid:
@@ -32,7 +32,7 @@ class Simulation:
                 str(self.rides) + ')')
 
     @staticmethod
-    def fromFile(filepath):
+    def from_file(filepath):
         with io.open(filepath) as f:
             # Get simulation metadata
             meta = list(map(int, f.readline().split(' ')))
@@ -43,11 +43,19 @@ class Simulation:
             num_of_steps = meta[5]
 
             # Get rides
-            for _ in range(0, num_of_rides):
+            rides = []
+            for i in range(0, num_of_rides):
                 ride_data = list(map(int, f.readline().split(' ')))
-                # TODO: make parsing rides a thing
+                x0 = ride_data[0]
+                y0 = ride_data[1]
+                x1 = ride_data[2]
+                y1 = ride_data[3]
+                earliest_start = ride_data[4]
+                latest_finish = ride_data[5]
+                rides.append(
+                    Ride(i, x0, x1, y0, y1, earliest_start, latest_finish))
 
-            return Simulation(grid, num_of_vehicles, bonus, num_of_steps, [])
+            return Simulation(grid, num_of_vehicles, bonus, num_of_steps, rides)
 
 
 def main():
