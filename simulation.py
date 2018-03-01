@@ -1,13 +1,18 @@
-#/usr/bin/env python3
+#!/usr/bin/env python3
 
 import io
 import sys
+import Ride
 
 
 class Grid:
     def __init__(self, r, c):
         self.r = r
         self.c = c
+
+    def __str__(self):
+        return (self.__class__.__name__ +
+                '(' + str(self.r) + ', ' + str(self.c) + ')')
 
 
 class Simulation:
@@ -18,16 +23,36 @@ class Simulation:
         self.num_of_steps = num_of_steps
         self.rides = rides
 
+    def __str__(self):
+        return (self.__class__.__name__ + '(' +
+                str(self.grid) + ', ' +
+                str(self.num_of_vehicles) + ', ' +
+                str(self.bonus) + ', ' +
+                str(self.num_of_steps) + ', ' +
+                str(self.rides) + ')')
+
     @staticmethod
-    def fromFile(path):
-        with io.open(sys.argv[1]) as f:
+    def fromFile(filepath):
+        with io.open(filepath) as f:
             # Get simulation metadata
-            l = f.readline()
-            ctrl = l.split(' ')
-            grid = Grid(ctrl[0], ctrl[1])
-            num_of_vehicles = ctrl[2]
-            num_of_rides = ctrl[3]
-            bonus = ctrl[4]
-            num_of_steps = ctrl[5]
+            meta = list(map(int, f.readline().split(' ')))
+            grid = Grid(meta[0], meta[1])
+            num_of_vehicles = meta[2]
+            num_of_rides = meta[3]
+            bonus = meta[4]
+            num_of_steps = meta[5]
+
+            # Get rides
+            for _ in range(0, num_of_rides):
+                ride_data = list(map(int, f.readline().split(' ')))
+                # TODO: make parsing rides a thing
 
             return Simulation(grid, num_of_vehicles, bonus, num_of_steps, [])
+
+
+def main():
+    print(Simulation.fromFile(sys.argv[1]))
+
+
+if __name__ == '__main__':
+    main()
