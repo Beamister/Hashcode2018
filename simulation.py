@@ -2,7 +2,7 @@
 
 import io
 import sys
-import TheMatrix
+from TheMatrix import TheMatrix
 from Car import Car
 from Ride import Ride
 
@@ -23,8 +23,9 @@ class Simulation:
         self.vehicles = vehicles
         self.bonus = bonus
         self.num_of_steps = num_of_steps
+        self.curStep = 0
         self.rides = rides
-        self.matrix = TheMatrix()
+        self.matrix = TheMatrix(len(vehicles), len(rides))
 
 
     def __str__(self):
@@ -54,13 +55,13 @@ class Simulation:
                 (carI, rideI) = self.matrix.returnLargest()
                 self.vehicles[carI].assignRide(self.rides[rideI])
 
-    def calculatepoints(self, car, ride):
+    def calculatePoints(self, car, ride):
         timeToRide = car.timeTo(ride.startX(),ride.startY())
 
         # if the car will arrive after finish, return -1 score
         if((timeToRide + self.num_of_steps) > ride.latest_finish):
             return -1
-        else if((timeToRide + self.num_of_steps + ride.distance()) > ride.latest_finish()):
+        elif((timeToRide + self.num_of_steps + ride.distance()) > ride.latest_finish()):
             return -1
 
         score = 0
@@ -106,16 +107,18 @@ class Simulation:
             vehicles = []
             for i in range(0, num_of_vehicles):
                 vehicles.append(Car(i))
-
+            
             return Simulation(grid, bonus, num_of_steps, rides, vehicles)
 
 
 def main():
-    print(Simulation.from_file(sys.argv[1]))
+    simulation = Simulation.from_file(sys.argv[1])
+    print(simulation)
     #Time loop here
-    for currentStep in range(Simulation.num_of_steps):
-        Simulation.assignments()
-        Simulation.moveCars()
+    for currentStep in range(simulation.num_of_steps):
+        simulation.curStep = currentStep
+        simulation.assignments()
+        simulation.moveCars()
 
 
 if __name__ == '__main__':
