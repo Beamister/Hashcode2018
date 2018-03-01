@@ -2,6 +2,7 @@
 
 import io
 import sys
+import TheMatrix
 from Car import Car
 from Ride import Ride
 
@@ -23,6 +24,8 @@ class Simulation:
         self.bonus = bonus
         self.num_of_steps = num_of_steps
         self.rides = rides
+        self.matrix = TheMatrix()
+
 
     def __str__(self):
         return (self.__class__.__name__ + ':\n' +
@@ -32,8 +35,24 @@ class Simulation:
                 "\nvehicles: " + str(self.vehicles) +
                 "\nrides: " + str(self.rides))
 
+    def moveCars(self):
+        for car in self.vehicles:
+            car.updatePos()
+
     def assignments(self):
-        print("Make assignments of cars to rides")
+        carI = 0
+        rideI = 0
+        for ride in self.rides:
+            rideI += 1
+            for car in self.vehicles:
+                if(not car.hasRide):
+                    carI += 1
+                    currentPointValue = self.calculatePoints(car, ride)
+                    self.matrix.setValue(carI, rideI, currentPointValue)
+        for car in self.vehicles:
+            if(not car.hasRide):
+                (carI, rideI) = self.matrix.returnLargest()
+                self.vehicles[carI].assignRide(self.rides[rideI])
 
     def calculatepoints(self, car, ride):
         timeToRide = car.timeTo(ride.startX(),ride.startY())
@@ -94,6 +113,10 @@ class Simulation:
 def main():
     print(Simulation.from_file(sys.argv[1]))
     #Time loop here
+    for currentStep in range(Simulation.num_of_steps):
+        Simulation.assignments()
+        Simulation.moveCars()
+
 
 if __name__ == '__main__':
     main()
