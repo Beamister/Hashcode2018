@@ -119,6 +119,10 @@ def main():
         simulation.curStep = currentStep
         simulation.assignments()
         simulation.moveCars()
+    outputList = []
+    for car in simulation.vehicles:
+        outputList.append(car.pastRides)
+    output("Output.txt", outputList)
 
 
 if __name__ == '__main__':
