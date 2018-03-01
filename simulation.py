@@ -2,6 +2,7 @@
 
 import io
 import sys
+import TheMatrix
 from Car import Car
 from Ride import Ride
 
@@ -23,6 +24,8 @@ class Simulation:
         self.bonus = bonus
         self.num_of_steps = num_of_steps
         self.rides = rides
+        self.matrix = TheMatrix()
+
 
     def __str__(self):
         return (self.__class__.__name__ + ':\n' +
@@ -32,12 +35,48 @@ class Simulation:
                 "\nvehicles: " + str(self.vehicles) +
                 "\nrides: " + str(self.rides))
 
+    def moveCars(self):
+        for car in self.vehicles:
+            car.updatePos()
+
     def assignments(self):
-        print("Make assignments of cars to rides")
+        carI = 0
+        rideI = 0
+        for ride in self.rides:
+            rideI += 1
+            for car in self.vehicles:
+                if(not car.hasRide):
+                    carI += 1
+                    currentPointValue = self.calculatePoints(car, ride)
+                    self.matrix.setValue(carI, rideI, currentPointValue)
+        for car in self.vehicles:
+            if(not car.hasRide):
+                (carI, rideI) = self.matrix.returnLargest()
+                self.vehicles[carI].assignRide(self.rides[rideI])
 
     def calculatepoints(self, car, ride):
-        print("Calculate those pointy bois")
+        timeToRide = car.timeTo(ride.startX(),ride.startY())
 
+        # if the car will arrive after finish, return -1 score
+        if((timeToRide + self.num_of_steps) > ride.latest_finish):
+            return -1
+        else if((timeToRide + self.num_of_steps + ride.distance()) > ride.latest_finish()):
+            return -1
+
+        score = 0
+
+        # add bonus if car will arrive on time
+        if((timeToRide + self.num_of_steps) == ride.earliest_start):
+            score += 2
+        
+        # add distance of the ride and length of ride
+        score += timeToRide + ride.distance() 
+
+        # reduce score by number of steps to start of ride
+        if((timeToRide + self.num_of_steps) < ride.earliest_start):
+            score -= (ride.earliest_start - (timeToRide + self.num_of_steps))
+
+        return score
 
     @staticmethod
     def from_file(filepath):
@@ -74,6 +113,10 @@ class Simulation:
 def main():
     print(Simulation.from_file(sys.argv[1]))
     #Time loop here
+    for currentStep in range(Simulation.num_of_steps):
+        Simulation.assignments()
+        Simulation.moveCars()
+
 
 if __name__ == '__main__':
     main()
